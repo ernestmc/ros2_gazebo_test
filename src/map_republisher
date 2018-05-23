@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+import rospy
+from nav_msgs.msg import OccupancyGrid
+from nav_msgs.srv import GetMap, GetMapRequest
+
+class MapRepublisher(object):
+
+    def __init__(self):
+        self.rate = rospy.Rate(rospy.get_param("~rate", 0.2))
+        service_name = rospy.get_param("~service_name", "/static_map")
+        rospy.wait_for_service(service_name)
+        self.service = rospy.ServiceProxy(service_name, GetMap)
+        self.pub = rospy.Publisher(rospy.get_param("~out_topic", "/map"), OccupancyGrid, queue_size=2)
+
+    def run(self):
+        while not rospy.is_shutdown():
+            resp = self.service.call(GetMapRequest())
+            self.pub.publish(resp.map)
+            self.rate.sleep()
+
+if __name__ == '__main__':
+    try:
+        rospy.init_node('map_republisher', anonymous=True)
+        node = MapRepublisher()
+        node.run()
+    except rospy.ROSInterruptException:
+        pass
