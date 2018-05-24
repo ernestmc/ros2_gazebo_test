@@ -39,6 +39,10 @@ repositories:
     type: git
     url: https://github.com/ros2/vision_opencv.git
     version: ros2
+  ros2/gazebo_ros_pkgs:
+    type: git
+    url: https://github.com/ernestmc/gazebo_ros_pkgs.git
+    version: ros2
   vendor/cartographer:
     type: git
     url: https://github.com/ros2/cartographer
